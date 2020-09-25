@@ -1,0 +1,266 @@
+type AlbumType implements Node {
+  """The ID of the object."""
+  id: ID!
+  spotifyId: String
+  name: String
+  artist: ArtistType
+  trackSet(before: String, after: String, first: Int, last: Int): TrackTypeConnection!
+}
+
+type AlbumTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [AlbumTypeEdge]!
+}
+
+"""A Relay edge containing a `AlbumType` and its cursor."""
+type AlbumTypeEdge {
+  """The item at the end of the edge"""
+  node: AlbumType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ArtistType implements Node {
+  """The ID of the object."""
+  id: ID!
+  spotifyId: String
+  name: String
+  trackSet(before: String, after: String, first: Int, last: Int): TrackTypeConnection!
+  albumSet(before: String, after: String, first: Int, last: Int): AlbumTypeConnection!
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+interface Node {
+  """The ID of the object."""
+  id: ID!
+}
+
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type PlaylistConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PlaylistEdge!]!
+
+  """Total number of items in the queryset, regardless of pagination."""
+  count: Int!
+
+  """Actual items in the queryset."""
+  nodes: [PlaylistType!]!
+}
+
+"""A Relay edge containing a `Playlist` and its cursor."""
+type PlaylistEdge {
+  """The item at the end of the edge"""
+  node: PlaylistType!
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type PlaylistTrackAssociationConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PlaylistTrackAssociationEdge!]!
+
+  """Total number of items in the queryset, regardless of pagination."""
+  count: Int!
+
+  """Actual items in the queryset."""
+  nodes: [PlaylistTrackAssociationType!]!
+}
+
+"""A Relay edge containing a `PlaylistTrackAssociation` and its cursor."""
+type PlaylistTrackAssociationEdge {
+  """The item at the end of the edge"""
+  node: PlaylistTrackAssociationType!
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type PlaylistTrackAssociationType implements Node {
+  """The ID of the object."""
+  id: ID!
+  playlist: PlaylistType
+  track: TrackType
+  addedAt: DateTime
+  order: Int!
+}
+
+type PlaylistTrackAssociationTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PlaylistTrackAssociationTypeEdge]!
+}
+
+"""
+A Relay edge containing a `PlaylistTrackAssociationType` and its cursor.
+"""
+type PlaylistTrackAssociationTypeEdge {
+  """The item at the end of the edge"""
+  node: PlaylistTrackAssociationType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type PlaylistType implements Node {
+  """The ID of the object."""
+  id: ID!
+  spotifyId: String
+  name: String
+  description: String
+  public: Boolean!
+  imageUrl: String
+  snapshotId: String
+  owner: SpotifyProfileType
+  followers(before: String, after: String, first: Int, last: Int): SpotifyProfileTypeConnection!
+  trackEdges(sort: String, query: String, before: String, after: String, first: Int, last: Int): PlaylistTrackAssociationConnection
+  trackCount(query: String): Int
+}
+
+type PlaylistTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PlaylistTypeEdge]!
+}
+
+"""A Relay edge containing a `PlaylistType` and its cursor."""
+type PlaylistTypeEdge {
+  """The item at the end of the edge"""
+  node: PlaylistType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type Query {
+  """The ID of the object"""
+  node(id: ID!): Node
+
+  """The ID of the object"""
+  playlist(id: ID!): PlaylistType
+  followedPlaylists(before: String, after: String, first: Int, last: Int): PlaylistConnection
+  ownedPlaylists(before: String, after: String, first: Int, last: Int): PlaylistConnection
+
+  """The ID of the object"""
+  track(id: ID!): TrackType
+  profile: SpotifyProfileType
+}
+
+type SpotifyProfileType implements Node {
+  """The ID of the object."""
+  id: ID!
+  user: UserType
+  spotifyId: String
+  currentAccessToken: String
+  accessTokenExpirationDate: DateTime
+  refreshToken: String
+  hasStartedImportingData: Boolean!
+  hasFinishedImportingData: Boolean!
+  ownedPlaylists(before: String, after: String, first: Int, last: Int): PlaylistTypeConnection!
+  followedPlaylists(before: String, after: String, first: Int, last: Int): PlaylistTypeConnection!
+}
+
+type SpotifyProfileTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [SpotifyProfileTypeEdge]!
+}
+
+"""A Relay edge containing a `SpotifyProfileType` and its cursor."""
+type SpotifyProfileTypeEdge {
+  """The item at the end of the edge"""
+  node: SpotifyProfileType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type TrackType implements Node {
+  """The ID of the object."""
+  id: ID!
+  spotifyId: String
+  name: String
+  artist: ArtistType
+  album: AlbumType
+  needsDataImport: Boolean!
+  statAcousticness: Float!
+  statDanceability: Float!
+  statEnergy: Float!
+  statInstrumentalness: Float!
+  statSpeechiness: Float!
+  statLiveness: Float!
+  statValence: Float!
+  statMode: Float!
+  statDurationMs: Int!
+  statKey: Float!
+  statLoudness: Float!
+  statTempo: Float!
+  statTimeSignature: Float!
+  playlistEdges(before: String, after: String, first: Int, last: Int): PlaylistTrackAssociationTypeConnection!
+  localFile: Boolean
+}
+
+type TrackTypeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [TrackTypeEdge]!
+}
+
+"""A Relay edge containing a `TrackType` and its cursor."""
+type TrackTypeEdge {
+  """The item at the end of the edge"""
+  node: TrackType
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type UserType implements Node {
+  """The ID of the object."""
+  id: ID!
+
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  username: String!
+  name: String
+}
+
